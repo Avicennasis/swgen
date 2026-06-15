@@ -11,7 +11,7 @@ func ReflectTypeHash(t reflect.Type) uint32 {
 	return uint32(reflect.Indirect(reflect.ValueOf(t)).FieldByName("hash").Uint())
 }
 
-// ReflectTypeReliableName returns real name of given reflect.Type, if it is non-empty, or auto-generates "anon_*"]
+// ReflectTypeReliableName returns real name of given reflect.Type, if it is non-empty, or auto-generates "anon_*"
 // name for anonymous structs
 func ReflectTypeReliableName(t reflect.Type) string {
 	if t.Name() != "" {

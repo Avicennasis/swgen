@@ -51,7 +51,7 @@ func isCommonName(typeName string) (ok bool) {
 	return
 }
 
-// SchemaFromCommonName create SchemaObj from common name of data types
+// SchemaFromCommonName creates SchemaObj from common name of data types
 // supported types: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types
 func SchemaFromCommonName(name commonName) SchemaObj {
 	data, ok := commonNamesMap[name]

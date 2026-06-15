@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-// Generator create swagger document
+// Generator creates swagger document
 type Generator struct {
 	doc  Document
 	host string // address of api in host:port format
@@ -20,7 +20,7 @@ type Generator struct {
 	definitionAdded map[string]bool           // index of TypeNames
 	definitions     defMap                    // list of all definition objects
 	defQueue        map[reflect.Type]struct{} // queue of reflect.Type objects waiting for analysis
-	paths           map[string]PathItem       // list all of paths object
+	paths           map[string]PathItem       // list all path objects
 	typesMap        map[reflect.Type]interface{}
 
 	indentJSON     bool
@@ -49,7 +49,7 @@ func (m *defMap) GenDefinitions() (result map[string]SchemaObj) {
 	return
 }
 
-// NewGenerator create a new Generator
+// NewGenerator creates a new Generator
 func NewGenerator() *Generator {
 	g := &Generator{}
 
@@ -57,7 +57,7 @@ func NewGenerator() *Generator {
 	g.definitionAdded = make(map[string]bool)
 
 	g.defQueue = make(map[reflect.Type]struct{})
-	g.paths = make(map[string]PathItem) // list all of paths object
+	g.paths = make(map[string]PathItem) // list all path objects
 	g.typesMap = make(map[reflect.Type]interface{})
 
 	g.doc.Schemes = []string{"http", "https"}
@@ -81,7 +81,7 @@ func (g *Generator) IndentJSON(enabled bool) *Generator {
 	return g
 }
 
-// ReflectGoTypes controls JSON indentation
+// ReflectGoTypes controls whether Go type names are reflected
 func (g *Generator) ReflectGoTypes(enabled bool) *Generator {
 	g.mu.Lock()
 	g.reflectGoTypes = enabled
@@ -89,7 +89,7 @@ func (g *Generator) ReflectGoTypes(enabled bool) *Generator {
 	return g
 }
 
-// EnableCORS enable HTTP handler support CORS
+// EnableCORS enables HTTP handler to support CORS
 func (g *Generator) EnableCORS(b bool, allowHeaders ...string) *Generator {
 	g.corsMu.Lock()
 	g.corsEnabled = b
@@ -113,7 +113,7 @@ func (g *Generator) writeCORSHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", strings.Join(g.corsAllowHeaders, ", "))
 }
 
-// SetHost set host info for swagger specification
+// SetHost sets host info for swagger specification
 func (g *Generator) SetHost(host string) *Generator {
 	g.mu.Lock()
 	g.host = host
@@ -121,7 +121,7 @@ func (g *Generator) SetHost(host string) *Generator {
 	return g
 }
 
-// SetBasePath set host info for swagger specification
+// SetBasePath sets base path info for swagger specification
 func (g *Generator) SetBasePath(basePath string) *Generator {
 	basePath = "/" + strings.Trim(basePath, "/")
 	g.mu.Lock()
@@ -130,7 +130,7 @@ func (g *Generator) SetBasePath(basePath string) *Generator {
 	return g
 }
 
-// SetContact set contact information for API
+// SetContact sets contact information for API
 func (g *Generator) SetContact(name, url, email string) *Generator {
 	ct := ContactObj{
 		Name:  name,
@@ -144,7 +144,7 @@ func (g *Generator) SetContact(name, url, email string) *Generator {
 	return g
 }
 
-// SetInfo set information about API
+// SetInfo sets information about API
 func (g *Generator) SetInfo(title, description, term, version string) *Generator {
 	info := InfoObj{
 		Title:          title,
@@ -159,7 +159,7 @@ func (g *Generator) SetInfo(title, description, term, version string) *Generator
 	return g
 }
 
-// SetLicense set license information for API
+// SetLicense sets license information for API
 func (g *Generator) SetLicense(name, url string) *Generator {
 	ls := LicenseObj{
 		Name: name,
@@ -172,7 +172,7 @@ func (g *Generator) SetLicense(name, url string) *Generator {
 	return g
 }
 
-// AddExtendedField add vendor extension field to document
+// AddExtendedField adds vendor extension field to document
 func (g *Generator) AddExtendedField(name string, value interface{}) *Generator {
 	g.mu.Lock()
 	g.doc.AddExtendedField(name, value)
@@ -188,7 +188,7 @@ func (g *Generator) AddSecurityDefinition(name string, def SecurityDef) *Generat
 	return g
 }
 
-// AddTypeMap add rule to use dst interface instead of src
+// AddTypeMap adds a rule to use dst interface instead of src
 func (g *Generator) AddTypeMap(src interface{}, dst interface{}) *Generator {
 	g.mu.Lock()
 	g.typesMap[reflect.TypeOf(src)] = dst
@@ -262,7 +262,7 @@ func (g *Generator) GenDocument() ([]byte, error) {
 	return g.genDocument(nil)
 }
 
-// ServeHTTP implements http.Handler to server swagger.json document
+// ServeHTTP implements http.Handler to serve swagger.json document
 func (g *Generator) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, err := g.genDocument(&r.URL.Host)
 	if err != nil {
